@@ -11,9 +11,8 @@ const storeUser = async (req, res) => {
   try {
     const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty())
       return res.status(400).json({ errors: errors.array() });
-    }
 
     const { name, email, password } = req.body;
 
@@ -24,7 +23,7 @@ const storeUser = async (req, res) => {
     };
 
     User.create(newUser)
-      .then((user) => {
+      .then(() => {
         res.send({ ok: "success" });
       })
       .catch((err) => {
@@ -53,10 +52,7 @@ const loginUser = async (req, res) => {
       .then((user) => {
         // compare password
         bcrypt.compare(password, user.password, async (error, result) => {
-          if (error) {
-            res.status(400).json({ errors: "imposible" });
-            return;
-          }
+          if (error) return res.status(400).json({ errors: "imposible" });
 
           if (result) {
             await createTokenUser(user.dataValues);
@@ -65,7 +61,7 @@ const loginUser = async (req, res) => {
           }
         });
       })
-      .catch((error) => {
+      .catch(() => {
         res.status(400).json({ errors: "user no register" });
       });
   } catch (error) {
@@ -77,7 +73,7 @@ const loginUser = async (req, res) => {
     let day = dayjs().format("YYYY-MM-DDTHH:mm:ssZ[Z]");
     let nextday = dayjs().add(1, "days").format("YYYY-MM-DDTHH:mm:ssZ[Z]");
 
-    delete user['password'];
+    delete user["password"];
     const token = jwt.sign(user, process.env.SECRET, { expiresIn: "1d" });
     const tokenEncrypt = await bcrypt.hash(token, 10);
 
@@ -107,7 +103,7 @@ const loginUser = async (req, res) => {
 
 const getUser = async (req, res) => {
   const session = await validSession(req, res);
-  res.send(session);
+  res.send(session.decoded);
 };
 
 module.exports = {

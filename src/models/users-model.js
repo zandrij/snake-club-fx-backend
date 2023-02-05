@@ -1,26 +1,29 @@
-const sequelize = require('../database/conexion');
-const Sequelize = require('sequelize');
-const bcrypt = require('bcrypt');
+const sequelize = require("../database/conexion");
+const Sequelize = require("sequelize");
+const bcrypt = require("bcrypt");
 
-
-const User = sequelize.define('users', {
+const User = sequelize.define(
+  "users",
+  {
     name: {
-        type: Sequelize.STRING,
+      type: Sequelize.STRING,
     },
     email: {
-        type: Sequelize.STRING,
-        unique: true
+      type: Sequelize.STRING,
+      unique: true,
     },
-    password:{
-        type: Sequelize.STRING
-    }
-}, {timestamps: false});
+    password: {
+      type: Sequelize.STRING,
+    },
+  },
+  { timestamps: false }
+);
 
 // Antes de guardar un usuario, cifra su contraseña
 User.beforeCreate((user, options) => {
-    return bcrypt.hash(user.password, 10).then(hash => {
-      user.password = hash;
-    });
+  return bcrypt.hash(user.password, 10).then((hash) => {
+    user.password = hash;
+  });
 });
 
 module.exports = User;

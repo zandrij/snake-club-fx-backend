@@ -8,6 +8,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use("/api", require("./router/router"));
+app.use("/client", require("./router/client-router"));
 
 app.get("/", (req, res) => {
   res.send({

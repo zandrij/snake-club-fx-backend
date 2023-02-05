@@ -1,18 +1,21 @@
-const express = require("express");
 const { check } = require("express-validator");
-const {
-  storeUser,
-  loginUser,
-  getUser,
-} = require("../controllers/users/users-controller");
-const { verifyToken } = require("../controllers/utils/utils");
 
+const express = require("express");
+const {
+  storeClient,
+  loginClient,
+  updateClient,
+  uploadPayment,
+  Client,
+} = require("../controllers/clients/clients-controller");
 const router = express.Router();
 
 router.post(
   "/register",
   [
+    check("name").not().isEmpty().withMessage("name required"),
     check("email").not().isEmpty().isEmail().withMessage("email invalid"),
+    check("country").not().isEmpty().isString().withMessage("country required"),
     check("password").not().isEmpty().isLength({ min: 8 }).withMessage("password invalid"),
     check("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password) {
@@ -21,7 +24,7 @@ router.post(
       return true;
     }),
   ],
-  storeUser
+  storeClient
 );
 
 router.post(
@@ -30,10 +33,11 @@ router.post(
     check("email").not().isEmpty().isEmail().withMessage("email invalid"),
     check("password").not().isEmpty().isLength({ min: 8 }).withMessage("password invalid"),
   ],
-  loginUser
+  loginClient
 );
 
-router.get("/user", verifyToken, getUser);
-
+router.put("/update", updateClient);
+router.post("/upload-payment", uploadPayment);
+router.get("/client", Client);
 
 module.exports = router;

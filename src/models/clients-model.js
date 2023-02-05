@@ -1,5 +1,6 @@
 const sequelize = require("../database/conexion");
 const Sequelize = require("sequelize");
+const bcrypt = require("bcrypt");
 
 const Clients = sequelize.define('clients', {
     name: {
@@ -18,18 +19,14 @@ const Clients = sequelize.define('clients', {
     state: {
         type: Sequelize.TINYINT,
     },
-    vip: {
-        type: Sequelize.TINYINT,
-        allowNull: true
-    },
-    payment_date: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    payment_state: {
-        type: Sequelize.TINYINT,
-        allowNull: true
-    }
+}, {timestamps: false, tableName: 'clients'});
+
+
+// Antes de guardar un usuario, cifra su contraseña
+Clients.beforeCreate((user, options) => {
+    return bcrypt.hash(user.password, 10).then((hash) => {
+      user.password = hash;
+    });
 });
 
 module.exports = Clients;

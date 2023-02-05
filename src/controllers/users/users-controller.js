@@ -55,7 +55,7 @@ const loginUser = async (req, res) => {
           if (error) return res.status(400).json({ errors: "imposible" });
 
           if (result) {
-            await createTokenUser(user.dataValues);
+            createTokenUser(user.dataValues);
           } else {
             res.status(400).json({ errors: "incorrect password" });
           }
@@ -83,27 +83,32 @@ const loginUser = async (req, res) => {
         where: {
           user_id: user.id,
         },
-      });
-      // create token
-      UsersJwt.create({
-        user_id: user.id,
-        token_encrypt: tokenEncrypt,
-        registered_at: day,
-        expired_at: nextday,
       })
+      .then(() => {
+        // save token
+        UsersJwt.create({
+          user_id: user.id,
+          token_encrypt: tokenEncrypt,
+          registered_at: day,
+          expired_at: nextday,
+        })
         .then(() => {
           res.send({ token });
         })
         .catch((error) => {
           res.status(400).json({ errors: "imposible" });
         });
+      })
+      .catch((error) => {
+        res.status(400).json({ errors: "imposible" });
+      });
     }
   };
 };
 
 const getUser = async (req, res) => {
   const session = await validSession(req, res);
-  res.send(session.decoded);
+  return res.send(session.decoded);
 };
 
 module.exports = {

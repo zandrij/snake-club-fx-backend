@@ -8,6 +8,7 @@ const {
   uploadPayment,
   Client,
 } = require("../controllers/clients/clients-controller");
+const { verifyTokenClient } = require("../controllers/utils/utils");
 const router = express.Router();
 
 router.post(
@@ -36,8 +37,8 @@ router.post(
   loginClient
 );
 
-router.put("/update", updateClient);
-router.post("/upload-payment", uploadPayment);
-router.get("/client", Client);
+router.put("/update", verifyTokenClient, updateClient);
+router.post("/upload-payment",  uploadPayment);
+router.get("/client", verifyTokenClient, Client);
 
 module.exports = router;

@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const ClientsJwt = require("../../models/clients-jwt");
 const dayjs = require("dayjs");
 const { validSession } = require("../utils/utils");
+const ClientsVip = require("../../models/clients-vip");
 dayjs.locale("es_ES");
 
 // * USER FUNCTIONS
@@ -146,9 +147,25 @@ const uploadPayment = () => {};
 
 // client information
 const Client = async (req, res) => {
-  const session = await validSession(req, res);
-  return res.send(session.decoded);
+  const {decoded} = await validSession(req, res);
+  if ( Object.keys(decoded).length > 0) {
+    Clients.findOne({
+      where: { id: decoded.id },
+      include: [{ model: ClientsVip, as: "Vip" }],
+      attributes: { exclude: "password" },
+    })
+    .then((user) => {
+      return res.send(user);
+    })
+    .catch( err => {
+      res.status(400).json({ errors: "imposible" });
+    })
+  }
 };
+
+
+
+
 
 // * ADMINISTRATOR FUNCTIONS
 

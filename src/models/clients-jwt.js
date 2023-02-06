@@ -1,5 +1,6 @@
 const sequelize = require("../database/conexion");
 const Sequelize = require("sequelize");
+const ClientsVip = require("./clients-vip");
 
 const ClientsJwt = sequelize.define(
   "clients_jwt",
@@ -20,5 +21,6 @@ const ClientsJwt = sequelize.define(
   },
   { timestamps: false, tableName: "clients_jwt" }
 );
+
 
 module.exports = ClientsJwt;

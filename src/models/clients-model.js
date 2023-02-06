@@ -1,8 +1,9 @@
 const sequelize = require("../database/conexion");
 const Sequelize = require("sequelize");
 const bcrypt = require("bcrypt");
+const ClientsVip = require("./clients-vip");
 
-const Clients = sequelize.define('clients', {
+const Clients = sequelize.define('Clients', {
     name: {
         type: Sequelize.STRING,
     },
@@ -28,5 +29,7 @@ Clients.beforeCreate((user, options) => {
       user.password = hash;
     });
 });
+
+Clients.hasOne(ClientsVip, {foreignKey: 'client_id'})
 
 module.exports = Clients;
